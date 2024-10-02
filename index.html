@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Teaching Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TUTOR</h1>
+            <p>Learn by Thinking, Not by Memorizing.</p>
+        </header>
+            
+        <div class="assistant-section">
+            <div id="assistant-question" class="question-box">
+                <p>Welcome! I will ask questions to guide your learning. What subject do you want to learn today?</p>
+            </div>
+            <input type="text" id="student-response" placeholder="Your response here...">
+            <button id="submit-response">Submit</button>
+        </div>
+
+        <div class="history-section">
+            <h2>Conversation History</h2>
+            <ul id="conversation-history"></ul> 
+        </div>
+        
+        <script>
+            let conversationHistory = [];
+            function generateDynamicQuestion(response) {
+                if (response) {
+                    return What more can you tell me about ${response}?;
+                }
+                return "What subject are you interested in learning more about?";
+            }
+            function askQuestion(initial = false) {
+                let question;
+                if (initial) {
+                    question = "What subject do you want to learn today?";
+                } else {
+                    const lastResponse = conversationHistory[conversationHistory.length - 1]?.student;
+                    question = generateDynamicQuestion(lastResponse);
+                }
+
+                document.getElementById("assistant-question").innerHTML = <p>${question}</p>;
+            }
+            document.getElementById("submit-response").addEventListener("click", function () {
+                const response = document.getElementById("student-response").value.trim();
+
+                if (response !== "") {
+                    const assistantQuestion = document.getElementById("assistant-question").textContent;
+                    conversationHistory.push({ assistant: assistantQuestion, student: response });
+                    const historyElement = document.createElement("li");
+                    historyElement.innerHTML = <strong>Assistant:</strong> ${assistantQuestion} <br> <strong>You:</strong> ${response};
+                    document.getElementById("conversation-history").appendChild(historyElement);
+                    document.getElementById("student-response").value = "";
+                    askQuestion();
+                }
+            });
+            askQuestion(true);
+        </script>
+    </div>
+
+</body>
+</html>
